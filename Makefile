@@ -1,18 +1,21 @@
-.PHONY: all clean pristine
+.PHONY: all test clean pristine
 
-all: main
+all: testfs
 
-main.o: main.c adder.h
-	gcc -Wall -Wextra -c main.c
+image.o: image.c image.h
+	gcc -Wall -Wextra -Werror -c image.c
 
-adder.o: adder.c
-	gcc -Wall -Wextra -c adder.c
+block.o: block.c block.h
+	gcc -Wall -Wextra -Werror -c block.c
 
-main: main.o adder.o
-	gcc -Wall -Wextra -o main main.o adder.o
+testfs: image.o block.o
+	gcc -Wall -Wextra -Werror -o main image.o block.o
+
+test:
+	./testfs
 
 clean:
 	rm -f *.o
 
 pristine: clean
-	rm -f main
+	rm -f testfs
