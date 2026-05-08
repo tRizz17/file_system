@@ -4,13 +4,13 @@
 #include <string.h>
 #include <image.h>
 #include <block.h>
+#define CTEST_ENABLE
 #include <ctest.h>
 
-const int BLOCK_SIZE = 4096;
+int main(void)
+{
 
+    image_open("test.txt", 1);
 
-int main(void) {
-
-    
-
+    image_close();
 }
