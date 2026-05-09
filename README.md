@@ -1,36 +1,21 @@
-# Conway's Game of Life
+# Very very simple file system
 
-_[REMOVE ALL COMMENTS SUCH AS THIS ONE BEFORE CHECKING IN.]_
-
-_[A good approach to creating the README is to take a stab at it before
-coding, and then fix it up after coding.]_
-
-_[You may add additional sections to this file if applicable, e.g. `##
-Deploying` or any other information that a user might find
-instructive.]_
 
 ## Building
 
-_[How to build the program. VS Code part is optional.]_
-
 Command line:
 
-* `make` to build. An executable called `clife` will be produced.
+* `make` to build. An executable called `testfs` will be produced.
+* `make test` to build and test.
 * `make clean` to clean up all build products except the executable.
 * `make pristine` to clean up all build products entirely.
 
-VS Code:
-
-* The default build task runs `make`.
-
 ## Files
 
-_[List files here, even if you only have one. Headers are optional.]_
-
-* `main.c`: The main code to launch the game
-* `life.c`: Code specific to Conway's Life
-* `display.c`: Code to related to display
-* `sysdetect.h`: Some macros for detecting system capabilities
+* `image.c`: Functions for opening and closing a file
+* `block.c`: Functions for reading and writing to blocks
+* `ctest.h`: Macros for writing tests
+* `testfs.c`: Runs tests
 
 ## Data
 

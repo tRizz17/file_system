@@ -1,25 +1,29 @@
+CCOPTS=-Wall -Wextra -Werror
+
 .PHONY: all test clean pristine
 
 all: testfs
 
 image.o: image.c image.h
-	gcc -Wall -Wextra -Werror -c image.c
+	gcc $(CCOPTS) -c image.c
 
 block.o: block.c block.h
-	gcc -Wall -Wextra -Werror -c block.c
+	gcc $(CCOPTS) -c block.c
 
 libvvsfs.a: image.o block.o
 	ar rcs $@ $^
 
-testfs: image.o block.o
-	gcc -Wall -Wextra -Werror -o main image.o block.o
+testfs.o: testfs.c image.h block.h ctest.h
+	gcc $(CCOPTS) -c testfs.c
 
-test:
-	make
+testfs: testfs.o libvvsfs.a
+	gcc $(CCOPTS) -DCTEST_ENABLE -o $@ testfs.o libvvsfs.a
+
+test: testfs
 	./testfs
 
 clean:
 	rm -f *.o
 
 pristine: clean
-	rm -f testfs
+	rm -f testfs libvvsfs.a test
