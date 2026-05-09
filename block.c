@@ -5,7 +5,6 @@
 #include "block.h"
 #include "image.h"
 
-
 unsigned char *bread(int block_num, unsigned char *block)
 {
     lseek(image_fd, (block_num * BLOCK_SIZE), SEEK_SET);
