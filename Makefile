@@ -8,10 +8,14 @@ image.o: image.c image.h
 block.o: block.c block.h
 	gcc -Wall -Wextra -Werror -c block.c
 
+libvvsfs.a: image.o block.o
+	ar rcs $@ $^
+
 testfs: image.o block.o
 	gcc -Wall -Wextra -Werror -o main image.o block.o
 
 test:
+	make
 	./testfs
 
 clean:
