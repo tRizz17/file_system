@@ -2,8 +2,18 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include "free.h"
+#include "block.h"
+#define INODE_BLOCK_NUM 1
 
-
-int ialloc(void);
-
-
+int ialloc(void)
+{
+    unsigned char inode_block[BLOCK_SIZE];
+    bread(INODE_BLOCK_NUM, inode_block);
+    int free_inode = find_free(inode_block);
+    if (free_inode == -1)
+        return free_inode;
+    set_free(inode_block, free_inode, 1);
+    bwrite(INODE_BLOCK_NUM, inode_block);
+    return free_inode;
+}

@@ -2,9 +2,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include "image.c"
 
-
-void mkfs(void);
+void mkfs(void) {
+    image_open("file_system", 1);
+}
 
 
 // Write an empty (all zeros) block to the following:
