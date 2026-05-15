@@ -4,7 +4,6 @@
 #include <string.h>
 #include "image.h"
 #include "block.h"
-#include "block.h"
 #include "inode.h"
 #define CTEST_ENABLE
 #include "ctest.h"
@@ -82,6 +81,35 @@ void test_alloc(void)
     image_close();
 }
 
+void test_ialloc_overflow(void)
+{
+    image_open("ialloc_test", 1);
+    unsigned char test_block[BLOCK_SIZE] = {0};
+    bwrite(INODE_BLOCK_NUM, test_block);
+    int last;
+    for (int i = 0; i < (BLOCK_SIZE * 8) + 1; i++)
+    {
+        last = ialloc();
+    }
+
+    CTEST_ASSERT(last == -1, "ialloc returns -1 if inode map full");
+    image_close();
+}
+
+void test_alloc_overflow(void)
+{
+    image_open("alloc_test", 1);
+    unsigned char test_block[BLOCK_SIZE] = {0};
+    bwrite(FREE_DATA_BLOCK_NUM, test_block);
+    int last;
+    for (int i = 0; i < (BLOCK_SIZE * 8) + 1; i++)
+    {
+        last = alloc();
+    }
+    CTEST_ASSERT(last == -1, "alloc returns -1 if data map full");
+    image_close();
+}
+
 int main(void)
 {
     CTEST_VERBOSE(1);
@@ -91,6 +119,8 @@ int main(void)
     test_set_specific_bit();
     test_ialloc();
     test_alloc();
+    test_ialloc_overflow();
+    test_alloc_overflow();
     CTEST_RESULTS();
     CTEST_EXIT();
 }
