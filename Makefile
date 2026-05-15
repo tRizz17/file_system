@@ -10,10 +10,13 @@ image.o: image.c image.h
 block.o: block.c block.h
 	gcc $(CCOPTS) -c block.c
 
-libvvsfs.a: image.o block.o
+free.o: free.c free.h
+	gcc $(CCOPTS) -c free.c
+
+libvvsfs.a: image.o block.o free.o
 	ar rcs $@ $^
 
-testfs.o: testfs.c image.h block.h ctest.h
+testfs.o: testfs.c image.h block.h free.h ctest.h
 	gcc $(CCOPTS) -c testfs.c
 
 testfs: testfs.o libvvsfs.a
