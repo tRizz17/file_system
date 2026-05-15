@@ -5,11 +5,6 @@
 #include "block.h"
 #define BITS_PER_BYTE 8
 
-// There are two blocks in the file system that represent free/not-free things:
-
-// Block 1: inode map
-// Block 2: Block map
-
 // Finds the lowest clear (not-set, zero) bit in a byte
 int find_low_clear_bit(unsigned char x)
 {
