@@ -13,10 +13,13 @@ block.o: block.c block.h
 free.o: free.c free.h
 	gcc $(CCOPTS) -c free.c
 
-libvvsfs.a: image.o block.o free.o
+inode.o: inode.c inode.h
+	gcc $(CCOPTS) -c inode.c
+
+libvvsfs.a: image.o block.o free.o inode.o
 	ar rcs $@ $^
 
-testfs.o: testfs.c image.h block.h free.h ctest.h
+testfs.o: testfs.c image.h block.h free.h ctest.h inode.h
 	gcc $(CCOPTS) -c testfs.c
 
 testfs: testfs.o libvvsfs.a
@@ -29,4 +32,4 @@ clean:
 	rm -f *.o
 
 pristine: clean
-	rm -f testfs libvvsfs.a test
+	rm -f testfs libvvsfs.a test ialloc_test alloc_test

@@ -4,7 +4,7 @@
 #include <string.h>
 #include "free.h"
 #include "block.h"
-#define INODE_BLOCK_NUM 1
+#include "inode.h"
 
 int ialloc(void)
 {

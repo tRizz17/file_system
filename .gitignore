@@ -4,3 +4,5 @@
 testfs
 *.txt
 test
+ialloc_test
+alloc_test
