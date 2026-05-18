@@ -15,10 +15,13 @@ int ialloc(void)
 {
     unsigned char inode_block[BLOCK_SIZE];
     bread(INODE_BLOCK_NUM, inode_block);
-    int free_inode = find_free(inode_block);
-    if (free_inode == -1)
-        return free_inode;
-    set_free(inode_block, free_inode, 1);
+    int free_inode_num = find_free(inode_block);
+    if (free_inode_num == -1)
+        return free_inode_num;
+    set_free(inode_block, free_inode_num, 1);
     bwrite(INODE_BLOCK_NUM, inode_block);
-    return free_inode;
+    int block_num = free_inode_num / INODES_PER_BLOCK + INODE_FIRST_BLOCK;
+    int block_offset = free_inode_num % INODES_PER_BLOCK;
+    int block_offset_bytes = block_offset * INODE_SIZE;
+    return free_inode_num;
 }
