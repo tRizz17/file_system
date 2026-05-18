@@ -27,7 +27,7 @@ int ialloc(void)
     // Below is just example usage that will probably come in handy later
     // Assuming `block` is the array we read with `bread()`
     // int flags = read_u8(block_num + block_offset_bytes + 7);
-    return free_inode_num;
+    return free_inode_num; // Keeping this for now so everything else works
 }
 
 struct inode *incore_find_free(void)

@@ -110,6 +110,30 @@ void test_alloc_overflow(void)
     image_close();
 }
 
+void test_ialloc_incore_methods(void)
+{
+    int test_count = 10;
+    for (int i = 0; i < test_count; i++)
+    {
+        struct inode test = {
+            .size = 1024,
+            .owner_id = 1,
+            .permissions = 0644,
+            .flags = 0,
+            .link_count = 1,
+            .block_ptr = {0},
+            .ref_count = 1,
+            .inode_num = i,
+        };
+        struct inode *free_spot = incore_find_free();
+        *free_spot = test;
+    }
+    struct inode *last = incore_find_free();
+    CTEST_ASSERT(last == 10, "incore_find_free finds the next free incore inode");
+
+
+}
+
 int main(void)
 {
     CTEST_VERBOSE(1);
