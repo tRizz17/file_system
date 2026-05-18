@@ -10,6 +10,7 @@
 #define INODE_FIRST_BLOCK 3
 #define INODES_PER_BLOCK (BLOCK_SIZE / INODE_SIZE)
 
+static struct inode incore[MAX_SYS_OPEN_FILES] = {0};
 
 int ialloc(void)
 {
@@ -23,5 +24,8 @@ int ialloc(void)
     int block_num = free_inode_num / INODES_PER_BLOCK + INODE_FIRST_BLOCK;
     int block_offset = free_inode_num % INODES_PER_BLOCK;
     int block_offset_bytes = block_offset * INODE_SIZE;
+    // Below is just example usage that will probably come in handy later
+    // Assuming `block` is the array we read with `bread()`
+    // int flags = read_u8(block_num + block_offset_bytes + 7);
     return free_inode_num;
 }
