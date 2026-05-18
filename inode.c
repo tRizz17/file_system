@@ -21,9 +21,9 @@ int ialloc(void)
         return free_inode_num;
     set_free(inode_block, free_inode_num, 1);
     bwrite(INODE_BLOCK_NUM, inode_block);
-    int block_num = free_inode_num / INODES_PER_BLOCK + INODE_FIRST_BLOCK;
-    int block_offset = free_inode_num % INODES_PER_BLOCK;
-    int block_offset_bytes = block_offset * INODE_SIZE;
+    // int block_num = free_inode_num / INODES_PER_BLOCK + INODE_FIRST_BLOCK;
+    // int block_offset = free_inode_num % INODES_PER_BLOCK;
+    // int block_offset_bytes = block_offset * INODE_SIZE;
     // Below is just example usage that will probably come in handy later
     // Assuming `block` is the array we read with `bread()`
     // int flags = read_u8(block_num + block_offset_bytes + 7);

@@ -113,12 +113,13 @@ void test_alloc_overflow(void)
 void test_ialloc_incore_methods(void)
 {
     int test_count = 10;
+    struct inode *base = incore_find_free();
     for (int i = 0; i < test_count; i++)
     {
         struct inode test = {
             .size = 1024,
             .owner_id = 1,
-            .permissions = 0644,
+            .permissions = 255,
             .flags = 0,
             .link_count = 1,
             .block_ptr = {0},
@@ -129,9 +130,38 @@ void test_ialloc_incore_methods(void)
         *free_spot = test;
     }
     struct inode *last = incore_find_free();
-    CTEST_ASSERT(last == 10, "incore_find_free finds the next free incore inode");
+    CTEST_ASSERT(last - base == 10, "incore_find_free finds the next free incore inode");
+    CTEST_ASSERT(incore_find(5) == base + 5, "incore_find finds the correct inode");
+    incore_free_all();
+    struct inode *new_base = incore_find_free();
+    CTEST_ASSERT(new_base == base, "incore free all successfully frees all structs in incore");
+}
 
-
+void test_ialloc_incore_methods_overflow(void)
+{
+    int test_count = 64;
+    struct inode *base = incore_find_free();
+    for (int i = 0; i < test_count; i++)
+    {
+        struct inode test = {
+            .size = 1024,
+            .owner_id = 1,
+            .permissions = 255,
+            .flags = 0,
+            .link_count = 1,
+            .block_ptr = {0},
+            .ref_count = 1,
+            .inode_num = i,
+        };
+        struct inode *free_spot = incore_find_free();
+        *free_spot = test;
+    }
+    struct inode *last = incore_find_free();
+    CTEST_ASSERT(last == NULL, "incore_find_free returns NULL if incore full");
+    incore_free_all();
+    CTEST_ASSERT(incore_find(5) == NULL, "incore_find returns NULL if struct ref_count == 0");
+    struct inode *new_base = incore_find_free();
+    CTEST_ASSERT(new_base == base, "incore free all successfully frees all structs in incore");
 }
 
 int main(void)
@@ -145,6 +175,8 @@ int main(void)
     test_alloc();
     test_ialloc_overflow();
     test_alloc_overflow();
+    test_ialloc_incore_methods();
+    test_ialloc_incore_methods_overflow();
     CTEST_RESULTS();
     CTEST_EXIT();
 }
