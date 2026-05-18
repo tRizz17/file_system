@@ -29,3 +29,23 @@ int ialloc(void)
     // int flags = read_u8(block_num + block_offset_bytes + 7);
     return free_inode_num;
 }
+
+struct inode *incore_find_free(void)
+{
+    for (int i = 0; i < MAX_SYS_OPEN_FILES; i++)
+    {
+        if (incore[i].ref_count == 0)
+        {
+            return (incore + i);
+        }
+    }
+    return NULL;
+}
+
+struct inode *incore_find(unsigned int inode_num)
+{
+}
+
+void incore_free_all(void)
+{
+}
