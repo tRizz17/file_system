@@ -5,6 +5,11 @@
 #include "free.h"
 #include "block.h"
 #include "inode.h"
+#include "pack.h"
+#define INODE_SIZE 64
+#define INODE_FIRST_BLOCK 3
+#define INODES_PER_BLOCK (BLOCK_SIZE / INODE_SIZE)
+
 
 int ialloc(void)
 {
