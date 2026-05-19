@@ -80,4 +80,23 @@ void read_inode(struct inode *in, int inode_num)
 
 void write_inode(struct inode *in)
 {
+    int inode_num = in->inode_num;
+    int block_num = inode_num / INODES_PER_BLOCK + INODE_FIRST_BLOCK;
+    int block_offset = inode_num % INODES_PER_BLOCK;
+    int block_offset_bytes = block_offset * INODE_SIZE;
+    unsigned char struct_block[BLOCK_SIZE];
+
+    bread(block_num, struct_block);
+
+    write_u32(struct_block + block_offset_bytes, in->size);
+    write_u16(struct_block + block_offset_bytes + 4, in->owner_id);
+    write_u8(struct_block + block_offset_bytes + 6, in->permissions);
+    write_u8(struct_block + block_offset_bytes + 7, in->flags);
+    write_u8(struct_block + block_offset_bytes + 9, in->link_count);
+    for (int i = 0; i < INODE_PTR_COUNT; i++)
+    {
+        write_u16(struct_block + block_offset_bytes + 9 + i * 2, in->block_ptr[i]);
+    }
+
+    bwrite(block_num, struct_block);
 }
