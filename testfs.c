@@ -209,6 +209,11 @@ void test_read_and_write_inode_flags(void)
     CTEST_ASSERT(read_test.flags == test_flags, "write_inode successfully writes, read_inode successfully reads flags field");
 }
 
+void test_iget(void)
+{
+    // This is where I left off. Need to test iget and iput
+}
+
 int main(void)
 {
     CTEST_VERBOSE(1);
