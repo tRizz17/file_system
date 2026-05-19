@@ -56,6 +56,11 @@ void test_ialloc(void)
     image_open("ialloc_test", 1);
     struct inode *tester = ialloc();
     CTEST_ASSERT(tester != NULL, "ialloc returns struct inode pointer");
+    struct inode read_test;
+    read_inode(&read_test, tester->inode_num);
+    CTEST_ASSERT(read_test.size == 0, "ialloc stores inode properly");
+    struct inode *tester2 = iget(tester->inode_num);
+    CTEST_ASSERT(tester2->ref_count == 2, "ialloc calls iget properly under the hood, increments ref_count");
     incore_free_all();
     image_close();
 }
@@ -75,20 +80,16 @@ void test_alloc(void)
     image_close();
 }
 
-// void test_ialloc_overflow(void)
-// {
-//     image_open("ialloc_test", 1);
-//     unsigned char test_block[BLOCK_SIZE] = {0};
-//     bwrite(INODE_BLOCK_NUM, test_block);
-//     int last;
-//     for (int i = 0; i < (BLOCK_SIZE * 8) + 1; i++)
-//     {
-//         last = ialloc();
-//     }
-
-//     CTEST_ASSERT(last == NULL, "ialloc returns NULL if inode map full");
-//     image_close();
-// }
+void test_ialloc_overflow(void)
+{
+    image_open("ialloc_test", 1);
+    struct inode *test;
+    for (int i = 0; i < MAX_SYS_OPEN_FILES+1; i++)
+        test = ialloc();
+    CTEST_ASSERT(test == NULL, "ialloc returns NULL when incore array is full");
+    incore_free_all();
+    image_close();
+}
 
 void test_alloc_overflow(void)
 {
@@ -254,7 +255,7 @@ int main(void)
     test_set_specific_bit();
     test_ialloc();
     test_alloc();
-    // test_ialloc_overflow();
+    test_ialloc_overflow();
     test_alloc_overflow();
     test_incore_methods();
     test_incore_methods_overflow();
