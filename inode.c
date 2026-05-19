@@ -104,18 +104,28 @@ void write_inode(struct inode *in)
 struct inode *iget(int inode_num)
 {
     struct inode *free_inode = incore_find(inode_num);
-    if (free_inode != NULL) {
+    if (free_inode != NULL)
+    {
         free_inode->ref_count += 1;
         return free_inode;
     }
     // If free_inode NULL
     free_inode = incore_find_free();
-    if (free_inode == NULL) {
+    if (free_inode == NULL)
+    {
         return NULL;
     }
     read_inode(free_inode, inode_num);
-    free_inode->ref_count += 1;
+    free_inode->ref_count = 1;
     free_inode->inode_num = inode_num;
     return free_inode;
+}
 
+void iput(struct inode *in)
+{
+    if (in->ref_count == 0)
+        return;
+    in->ref_count -= 1;
+    if (in->ref_count == 0)
+        write_inode(in);
 }
