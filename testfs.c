@@ -110,7 +110,7 @@ void test_alloc_overflow(void)
     image_close();
 }
 
-void test_ialloc_incore_methods(void)
+void test_incore_methods(void)
 {
     int test_count = 10;
     struct inode *base = incore_find_free();
@@ -137,7 +137,7 @@ void test_ialloc_incore_methods(void)
     CTEST_ASSERT(new_base == base, "incore free all successfully frees all structs in incore");
 }
 
-void test_ialloc_incore_methods_overflow(void)
+void test_incore_methods_overflow(void)
 {
     int test_count = 64;
     struct inode *base = incore_find_free();
@@ -209,9 +209,45 @@ void test_read_and_write_inode_flags(void)
     CTEST_ASSERT(read_test.flags == test_flags, "write_inode successfully writes, read_inode successfully reads flags field");
 }
 
-void test_iget(void)
+void test_iget_and_iput(void)
 {
-    // This is where I left off. Need to test iget and iput
+    unsigned int test_num = 5;
+    int test_flag = 40;
+    image_open("test", 1);
+    incore_free_all();
+
+    struct inode test_inode = {
+        .size = 1024,
+        .owner_id = 1,
+        .permissions = 255,
+        .flags = test_flag,
+        .link_count = 1,
+        .block_ptr = {0},
+        .ref_count = 1,
+        .inode_num = test_num,
+    };
+    write_inode(&test_inode);
+
+    struct inode *first = iget(test_num);
+
+    CTEST_ASSERT(first != NULL, "iget returns non-NULL inode");
+    CTEST_ASSERT(first->inode_num == test_num, "iget sets inode_num");
+    CTEST_ASSERT(first->flags == test_flag, "iget sets flag correctly");
+    CTEST_ASSERT(first->ref_count == 1, "iget sets ref_count to 1 when inode not incore");
+
+    struct inode *second = iget(test_num);
+    CTEST_ASSERT(second == first, "iget returns incore inode on second call");
+    CTEST_ASSERT(second->ref_count == 2, "iget successfully increments ref_count");
+
+    iput(second);
+    CTEST_ASSERT(second->ref_count == 1, "iput decrements ref_count");
+
+    second->permissions = 7; // mutate field for testing
+    iput(second);
+    struct inode third;
+    read_inode(&third, test_num);
+    CTEST_ASSERT(third.permissions == 7, "iput calls write_inode when ref_count hits 0");
+    image_close();
 }
 
 int main(void)
@@ -225,10 +261,11 @@ int main(void)
     test_alloc();
     test_ialloc_overflow();
     test_alloc_overflow();
-    test_ialloc_incore_methods();
-    test_ialloc_incore_methods_overflow();
+    test_incore_methods();
+    test_incore_methods_overflow();
     test_read_and_write_inode_owner_id();
     test_read_and_write_inode_flags();
+    test_iget_and_iput();
     CTEST_RESULTS();
     CTEST_EXIT();
 }
