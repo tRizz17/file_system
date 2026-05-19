@@ -16,10 +16,13 @@ free.o: free.c free.h
 inode.o: inode.c inode.h
 	gcc $(CCOPTS) -c inode.c
 
-libvvsfs.a: image.o block.o free.o inode.o
+pack.o: pack.c pack.h
+	gcc $(CCOPTS) -c pack.c
+
+libvvsfs.a: image.o block.o free.o inode.o pack.o
 	ar rcs $@ $^
 
-testfs.o: testfs.c image.h block.h free.h ctest.h inode.h
+testfs.o: testfs.c image.h block.h free.h ctest.h inode.h pack.h
 	gcc $(CCOPTS) -c testfs.c
 
 testfs: testfs.o libvvsfs.a
