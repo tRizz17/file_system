@@ -4,7 +4,7 @@
 #define INODE_PTR_COUNT 16
 #define MAX_SYS_OPEN_FILES 64
 
-int ialloc(void);
+struct inode *ialloc(void);
 struct inode *incore_find_free(void);
 struct inode *incore_find(unsigned int inode_num);
 void incore_free_all(void);
