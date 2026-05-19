@@ -164,13 +164,14 @@ void test_ialloc_incore_methods_overflow(void)
     CTEST_ASSERT(new_base == base, "incore free all successfully frees all structs in incore");
 }
 
-void test_read_and_write_inode(void)
+void test_read_and_write_inode_owner_id(void)
 {
     int test_inode_num = 5;
+    int test_owner_id = 17;
 
-    struct inode write_test = {   
+    struct inode write_test = {
         .size = 1024,
-        .owner_id = 17,
+        .owner_id = test_owner_id,
         .permissions = 255,
         .flags = 0,
         .link_count = 1,
@@ -182,7 +183,30 @@ void test_read_and_write_inode(void)
 
     struct inode read_test;
     read_inode(&read_test, test_inode_num);
-    CTEST_ASSERT(read_test.owner_id == 17, "write_inode successfully writes, read_inode successfully reads");
+    CTEST_ASSERT(read_test.owner_id == test_owner_id, "write_inode successfully writes, read_inode successfully reads owner_id field");
+}
+
+void test_read_and_write_inode_flags(void)
+{
+    int test_inode_num = 8;
+    int test_owner_id = 17;
+    int test_flags = 20;
+
+    struct inode write_test = {
+        .size = 1024,
+        .owner_id = test_owner_id,
+        .permissions = 255,
+        .flags = test_flags,
+        .link_count = 1,
+        .block_ptr = {0},
+        .ref_count = 0,
+        .inode_num = test_inode_num,
+    };
+    write_inode(&write_test);
+
+    struct inode read_test;
+    read_inode(&read_test, test_inode_num);
+    CTEST_ASSERT(read_test.flags == test_flags, "write_inode successfully writes, read_inode successfully reads flags field");
 }
 
 int main(void)
@@ -198,7 +222,8 @@ int main(void)
     test_alloc_overflow();
     test_ialloc_incore_methods();
     test_ialloc_incore_methods_overflow();
-    test_read_and_write_inode();
+    test_read_and_write_inode_owner_id();
+    test_read_and_write_inode_flags();
     CTEST_RESULTS();
     CTEST_EXIT();
 }

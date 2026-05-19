@@ -10,6 +10,7 @@ struct inode *incore_find(unsigned int inode_num);
 void incore_free_all(void);
 void read_inode(struct inode *in, int inode_num);
 void write_inode(struct inode *in);
+struct inode *iget(int inode_num);
 
 struct inode
 {

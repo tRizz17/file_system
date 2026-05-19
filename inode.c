@@ -100,3 +100,22 @@ void write_inode(struct inode *in)
 
     bwrite(block_num, struct_block);
 }
+
+struct inode *iget(int inode_num)
+{
+    struct inode *free_inode = incore_find(inode_num);
+    if (free_inode != NULL) {
+        free_inode->ref_count += 1;
+        return free_inode;
+    }
+    // If free_inode NULL
+    free_inode = incore_find_free();
+    if (free_inode == NULL) {
+        return NULL;
+    }
+    read_inode(free_inode, inode_num);
+    free_inode->ref_count += 1;
+    free_inode->inode_num = inode_num;
+    return free_inode;
+
+}
