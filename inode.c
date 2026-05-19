@@ -9,6 +9,12 @@
 #define INODE_SIZE 64
 #define INODE_FIRST_BLOCK 3
 #define INODES_PER_BLOCK (BLOCK_SIZE / INODE_SIZE)
+#define OWNER_ID_OFFSET 4
+#define PERMISSIONS_OFFSET 6
+#define FLAGS_OFFSET 7
+#define LINK_COUNT_OFFSET 8
+#define BLOCK_PTR_ARRAY_OFFSET 9
+#define BLOCK_PTR_OFFSET 2
 
 static struct inode incore[MAX_SYS_OPEN_FILES] = {0};
 
@@ -22,7 +28,7 @@ int ialloc(void)
     set_free(inode_block, free_inode_num, 1);
     bwrite(INODE_BLOCK_NUM, inode_block);
 
-    return free_inode_num; // Keeping this for now so everything else works
+    return free_inode_num;
 }
 
 struct inode *incore_find_free(void)
@@ -68,13 +74,13 @@ void read_inode(struct inode *in, int inode_num)
     bread(block_num, struct_block);
 
     in->size = read_u32(struct_block + block_offset_bytes);
-    in->owner_id = read_u16(struct_block + block_offset_bytes + 4);
-    in->permissions = read_u8(struct_block + block_offset_bytes + 6);
-    in->flags = read_u8(struct_block + block_offset_bytes + 7);
-    in->link_count = read_u8(struct_block + block_offset_bytes + 8);
+    in->owner_id = read_u16(struct_block + block_offset_bytes + OWNER_ID_OFFSET);
+    in->permissions = read_u8(struct_block + block_offset_bytes + PERMISSIONS_OFFSET);
+    in->flags = read_u8(struct_block + block_offset_bytes + FLAGS_OFFSET);
+    in->link_count = read_u8(struct_block + block_offset_bytes + LINK_COUNT_OFFSET);
     for (int i = 0; i < INODE_PTR_COUNT; i++)
     {
-        in->block_ptr[i] = read_u16(struct_block + block_offset_bytes + 9 + i * 2);
+        in->block_ptr[i] = read_u16(struct_block + block_offset_bytes + BLOCK_PTR_ARRAY_OFFSET + i * BLOCK_PTR_OFFSET);
     }
 }
 
@@ -89,13 +95,13 @@ void write_inode(struct inode *in)
     bread(block_num, struct_block);
 
     write_u32(struct_block + block_offset_bytes, in->size);
-    write_u16(struct_block + block_offset_bytes + 4, in->owner_id);
-    write_u8(struct_block + block_offset_bytes + 6, in->permissions);
-    write_u8(struct_block + block_offset_bytes + 7, in->flags);
-    write_u8(struct_block + block_offset_bytes + 9, in->link_count);
+    write_u16(struct_block + block_offset_bytes + OWNER_ID_OFFSET, in->owner_id);
+    write_u8(struct_block + block_offset_bytes + PERMISSIONS_OFFSET, in->permissions);
+    write_u8(struct_block + block_offset_bytes + FLAGS_OFFSET, in->flags);
+    write_u8(struct_block + block_offset_bytes + LINK_COUNT_OFFSET, in->link_count);
     for (int i = 0; i < INODE_PTR_COUNT; i++)
     {
-        write_u16(struct_block + block_offset_bytes + 9 + i * 2, in->block_ptr[i]);
+        write_u16(struct_block + block_offset_bytes + BLOCK_PTR_ARRAY_OFFSET + i * BLOCK_PTR_OFFSET, in->block_ptr[i]);
     }
 
     bwrite(block_num, struct_block);
