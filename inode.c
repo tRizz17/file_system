@@ -63,36 +63,21 @@ void read_inode(struct inode *in, int inode_num)
     int block_num = inode_num / INODES_PER_BLOCK + INODE_FIRST_BLOCK;
     int block_offset = inode_num % INODES_PER_BLOCK;
     int block_offset_bytes = block_offset * INODE_SIZE;
-
-    // For reference
-    // struct inode
-    // {
-    //     unsigned int size;
-    //     unsigned short owner_id;
-    //     unsigned char permissions;
-    //     unsigned char flags;
-    //     unsigned char link_count;
-    //     unsigned short block_ptr[INODE_PTR_COUNT];
-
-    //     unsigned int ref_count; // in-core only
-    //     unsigned int inode_num; // in-core only
-    // };
-
-    // Below is just example usage that will probably come in handy later
-    // Assuming `block` is the array we read with `bread()`
-    // int flags = read_u8(block_num + block_offset_bytes + 7);
-
     unsigned char struct_block[BLOCK_SIZE];
+
     bread(block_num, struct_block);
+
     in->size = read_u32(struct_block + block_offset_bytes);
-    in->owner_id = read_u16(struct_block + block_offset_bytes + 2);
-    in->permissions = read_u8(struct_block + block_offset_bytes + 2 + 1);
-    in->flags = read_u8(struct_block + block_offset_bytes + 2 + 1 + 1);
-    in->link_count = read_u8(struct_block + block_offset_bytes + 2 + 1 + 1 + 1);
-    in->block_ptr[INODE_PTR_COUNT] = read_u16(struct_block + block_offset_bytes + 2 + 1 + 1 + 1 + 2);
+    in->owner_id = read_u16(struct_block + block_offset_bytes + 4);
+    in->permissions = read_u8(struct_block + block_offset_bytes + 6);
+    in->flags = read_u8(struct_block + block_offset_bytes + 7);
+    in->link_count = read_u8(struct_block + block_offset_bytes + 8);
+    for (int i = 0; i < INODE_PTR_COUNT; i++)
+    {
+        in->block_ptr[i] = read_u16(struct_block + block_offset_bytes + 9 + i * 2);
+    }
 }
 
 void write_inode(struct inode *in)
 {
-    
 }
