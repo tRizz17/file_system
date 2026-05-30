@@ -85,7 +85,7 @@ void test_ialloc_overflow(void)
 {
     image_open("ialloc_test", 1);
     struct inode *test;
-    for (int i = 0; i < MAX_SYS_OPEN_FILES+1; i++)
+    for (int i = 0; i < MAX_SYS_OPEN_FILES + 1; i++)
         test = ialloc();
     CTEST_ASSERT(test == NULL, "ialloc returns NULL when incore array is full");
     incore_free_all();
@@ -247,6 +247,24 @@ void test_iget_and_iput(void)
     image_close();
 }
 
+void test_mkfs(void)
+{
+    mkfs();
+    image_open("file_system", 0);
+    struct inode root;
+    read_inode(&root, 0);
+
+    unsigned char block[BLOCK_SIZE];
+
+    bread(root.block_ptr[0], block);
+    CTEST_ASSERT(block[0] == 0, "root inode number is 0");
+    CTEST_ASSERT(block[1] == 0, "root inode number is 0");
+    CTEST_ASSERT(block[2] == '.', "root directory name is .");
+    CTEST_ASSERT(block[32] == 0, ".. inode number is 0");
+    CTEST_ASSERT(strcmp((char *)block + 34, "..") == 0, "name .. written to correct location");
+    image_close();
+}
+
 int main(void)
 {
     CTEST_VERBOSE(1);
@@ -263,6 +281,7 @@ int main(void)
     test_read_and_write_inode_owner_id();
     test_read_and_write_inode_flags();
     test_iget_and_iput();
+    test_mkfs();
     CTEST_RESULTS();
     CTEST_EXIT();
 }

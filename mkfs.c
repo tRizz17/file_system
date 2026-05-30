@@ -23,18 +23,19 @@ void mkfs(void)
     }
     struct inode *root_inode = ialloc();
     int root_block_num = alloc();
+
     root_inode->flags = DIR_FLAG;
     root_inode->size = ROOT_SIZE;
     root_inode->block_ptr[0] = root_block_num;
 
-    unsigned char block[BLOCK_SIZE];
+    unsigned char block[BLOCK_SIZE] = {0};
     unsigned char *pos = block;
     char *name = ".";
 
     for (int i = 0; i < 2; i++)
     {
         write_u16(pos, root_inode->inode_num);
-        strcpy(pos + 2, name);
+        strcpy((char *)pos + 2, name);
         pos = block + DIR_ENTRY_SIZE;
         name = "..";
     }

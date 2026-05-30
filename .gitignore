@@ -6,3 +6,4 @@ testfs
 test
 ialloc_test
 alloc_test
+file_system
