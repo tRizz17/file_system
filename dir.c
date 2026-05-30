@@ -1,13 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include "inode.h"
+#include "dir.h"
 
-struct directory
-{
-    struct inode *inode;
-    unsigned int offset;
-};
 
 struct directory *directory_open(int inode_num)
 {

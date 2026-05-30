@@ -9,6 +9,7 @@
 #include "ctest.h"
 #include "free.h"
 #include "mkfs.h"
+#include "dir.h"
 
 #ifdef CTEST_ENABLE
 
@@ -265,6 +266,19 @@ void test_mkfs(void)
     image_close();
 }
 
+void test_directory_open(void)
+{
+    mkfs();
+    image_open("file_system", 0);
+    // Hardcoding 0 as it is the only directory for the nonce
+    struct directory *dir2 = directory_open(0);
+    CTEST_ASSERT(dir2 != NULL, "directory open does not return NULL when root directory has been created");
+    CTEST_ASSERT(dir2->offset == 0, "offset set correctly");
+    struct inode *inode = iget(0);
+    CTEST_ASSERT(dir2->inode == inode, "both inodes with inode_num 0 are the same");
+    image_close();
+}
+
 int main(void)
 {
     CTEST_VERBOSE(1);
@@ -282,6 +296,7 @@ int main(void)
     test_read_and_write_inode_flags();
     test_iget_and_iput();
     test_mkfs();
+    test_directory_open();
     CTEST_RESULTS();
     CTEST_EXIT();
 }
