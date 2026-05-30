@@ -277,6 +277,7 @@ void test_directory_open(void)
     struct inode *inode = iget(0);
     CTEST_ASSERT(dir2->inode == inode, "both inodes with inode_num 0 are the same");
     directory_close(dir2);
+    CTEST_ASSERT(dir2->inode != inode, "directory close works");
     image_close();
 }
 
