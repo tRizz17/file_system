@@ -7,5 +7,6 @@ struct directory
     unsigned int offset;
 };
 struct directory *directory_open(int inode_num);
+void directory_close(struct directory *d);
 
 #endif

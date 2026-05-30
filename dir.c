@@ -6,7 +6,6 @@
 #include "inode.h"
 #include "dir.h"
 
-
 struct directory *directory_open(int inode_num)
 {
 
@@ -18,4 +17,10 @@ struct directory *directory_open(int inode_num)
     dir->inode = inode;
     dir->offset = 0;
     return dir;
+}
+
+void directory_close(struct directory *d)
+{
+    iput(d->inode);
+    free(d);
 }
