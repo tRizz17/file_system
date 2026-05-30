@@ -8,6 +8,7 @@
 #define CTEST_ENABLE
 #include "ctest.h"
 #include "free.h"
+#include "mkfs.h"
 
 #ifdef CTEST_ENABLE
 
