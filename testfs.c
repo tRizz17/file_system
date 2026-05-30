@@ -266,7 +266,7 @@ void test_mkfs(void)
     image_close();
 }
 
-void test_directory_open(void)
+void test_directory_open_close(void)
 {
     mkfs();
     image_open("file_system", 0);
@@ -298,7 +298,7 @@ int main(void)
     test_read_and_write_inode_flags();
     test_iget_and_iput();
     test_mkfs();
-    test_directory_open();
+    test_directory_open_close();
     CTEST_RESULTS();
     CTEST_EXIT();
 }

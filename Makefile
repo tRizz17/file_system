@@ -22,7 +22,7 @@ pack.o: pack.c pack.h
 mkfs.o: mkfs.c image.h block.h inode.h pack.h
 	gcc $(CCOPTS) -c mkfs.c
 
-dir.o: dir.c dir.h
+dir.o: dir.c dir.h inode.h block.h pack.h
 	gcc $(CCOPTS) -c dir.c
 
 libvvsfs.a: image.o block.o free.o inode.o pack.o mkfs.o dir.o
