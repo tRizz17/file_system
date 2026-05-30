@@ -22,10 +22,13 @@ pack.o: pack.c pack.h
 mkfs.o: mkfs.c image.h block.h inode.h pack.h
 	gcc $(CCOPTS) -c mkfs.c
 
-libvvsfs.a: image.o block.o free.o inode.o pack.o mkfs.o
+dir.o: dir.c dir.h
+	gcc $(CCOPTS) -c dir.c
+
+libvvsfs.a: image.o block.o free.o inode.o pack.o mkfs.o dir.o
 	ar rcs $@ $^
 
-testfs.o: testfs.c image.h block.h free.h ctest.h inode.h pack.h mkfs.h
+testfs.o: testfs.c image.h block.h free.h ctest.h inode.h pack.h mkfs.h dir.h
 	gcc $(CCOPTS) -c testfs.c
 
 testfs: testfs.o libvvsfs.a
