@@ -10,6 +10,8 @@
 #define RESERVED_BLOCKS_NUM 7
 #define ROOT_SIZE 64
 #define DIR_FLAG 2
+#define FREE_BLOCK_MAP 2
+#define INODE_NUM_OFFSET 2
 
 
 void mkfs(void)
@@ -18,7 +20,7 @@ void mkfs(void)
     for (int i = 0; i < RESERVED_BLOCKS_NUM; i++)
     {
         unsigned char block[BLOCK_SIZE] = {0};
-        if (i == 2)
+        if (i == FREE_BLOCK_MAP)
             block[0] = 0x7f;
         bwrite(i, block);
     }
@@ -36,7 +38,7 @@ void mkfs(void)
     for (int i = 0; i < 2; i++)
     {
         write_u16(pos, root_inode->inode_num);
-        strcpy((char *)pos + 2, name);
+        strcpy((char *)pos + INODE_NUM_OFFSET, name);
         pos = block + DIR_ENTRY_SIZE;
         name = "..";
     }

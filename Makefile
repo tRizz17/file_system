@@ -41,4 +41,4 @@ clean:
 	rm -f *.o
 
 pristine: clean
-	rm -f testfs libvvsfs.a test ialloc_test alloc_test file_system
+	rm -f testfs libvvsfs.a test ialloc_test alloc_test file_system ls
