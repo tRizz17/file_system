@@ -271,13 +271,25 @@ void test_directory_open_close(void)
     mkfs();
     image_open("file_system", 0);
     // Hardcoding 0 as it is the only directory for the nonce
-    struct directory *dir2 = directory_open(0);
-    CTEST_ASSERT(dir2 != NULL, "directory open does not return NULL when root directory has been created");
-    CTEST_ASSERT(dir2->offset == 0, "offset set correctly");
+    struct directory *dir = directory_open(0);
+    CTEST_ASSERT(dir != NULL, "directory open does not return NULL when root directory has been created");
+    CTEST_ASSERT(dir->offset == 0, "offset set correctly");
     struct inode *inode = iget(0);
-    CTEST_ASSERT(dir2->inode == inode, "both inodes with inode_num 0 are the same");
-    directory_close(dir2);
-    CTEST_ASSERT(dir2->inode != inode, "directory close works");
+    CTEST_ASSERT(dir->inode == inode, "both inodes with inode_num 0 are the same");
+    directory_close(dir);
+    CTEST_ASSERT(dir->inode != inode, "directory close works");
+    image_close();
+}
+
+void test_directory_get(void)
+{
+    mkfs();
+    image_open("file_system", 0);
+    struct directory *dir = directory_open(0);
+    struct directory_entry ent;
+    int val = directory_get(dir, &ent);
+    CTEST_ASSERT(val == 0, "directory_get returns successfully");
+    directory_close(dir);
     image_close();
 }
 
@@ -299,6 +311,7 @@ int main(void)
     test_iget_and_iput();
     test_mkfs();
     test_directory_open_close();
+    test_directory_get();
     CTEST_RESULTS();
     CTEST_EXIT();
 }

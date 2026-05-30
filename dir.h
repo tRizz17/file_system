@@ -1,5 +1,6 @@
 #ifndef DIR_H
 #define DIR_H
+#define DIR_ENTRY_SIZE 32
 
 struct directory
 {

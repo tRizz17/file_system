@@ -6,10 +6,11 @@
 #include "block.h"
 #include "inode.h"
 #include "pack.h"
+#include "dir.h"
 #define RESERVED_BLOCKS_NUM 7
 #define ROOT_SIZE 64
 #define DIR_FLAG 2
-#define DIR_ENTRY_SIZE 32
+
 
 void mkfs(void)
 {

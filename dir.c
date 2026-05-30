@@ -8,6 +8,7 @@
 #include "block.h"
 #include "pack.h"
 
+
 struct directory *directory_open(int inode_num)
 {
 
@@ -34,6 +35,7 @@ int directory_get(struct directory *dir, struct directory_entry *ent)
     int offset_in_block = dir->offset % BLOCK_SIZE;
     ent->inode_num = read_u16(block + offset_in_block);
     strcpy(ent->name, (char *)(block + offset_in_block + 2));
+    dir->offset += DIR_ENTRY_SIZE;
     return 0;
 }
 
