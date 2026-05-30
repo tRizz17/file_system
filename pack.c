@@ -5,9 +5,9 @@ unsigned int read_u32(void *addr)
     unsigned char *bytes = addr;
 
     return (bytes[0] << 24) |
-        (bytes[1] << 16) |
-        (bytes[2] << 8) |
-        (bytes[3] << 0);
+           (bytes[1] << 16) |
+           (bytes[2] << 8) |
+           (bytes[3] << 0);
 }
 
 unsigned short read_u16(void *addr)
@@ -48,4 +48,3 @@ void write_u8(void *addr, unsigned char value)
 
     bytes[0] = value;
 }
-

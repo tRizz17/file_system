@@ -8,7 +8,6 @@
 #include "block.h"
 #include "pack.h"
 
-
 struct directory *directory_open(int inode_num)
 {
 

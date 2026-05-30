@@ -13,7 +13,6 @@
 #define FREE_BLOCK_MAP 2
 #define INODE_NUM_OFFSET 2
 
-
 void mkfs(void)
 {
     image_open("file_system", 1);
