@@ -4,7 +4,10 @@
 #include <string.h>
 #include "image.h"
 #include "block.h"
+#include "inode.h"
 #define RESERVED_BLOCKS_NUM 7
+#define ROOT_SIZE 64
+#define DIR_FLAG 2
 
 void mkfs(void)
 {
@@ -16,5 +19,13 @@ void mkfs(void)
             block[0] = 0x7f;
         bwrite(i, block);
     }
+    struct inode *root_inode = ialloc();
+    int root_block_num = alloc();
+    root_inode->flags = DIR_FLAG;
+    root_inode->size = ROOT_SIZE;
+    root_inode->block_ptr[0] = root_block_num;
+    unsigned char block[BLOCK_SIZE];
+    
+
     image_close();
 }
